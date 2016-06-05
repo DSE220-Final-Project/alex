@@ -1,0 +1,26 @@
+LOAD CSV  
+    FROM all filenames matching ~'IRI week translation_2008_2017.csv'
+      in directory '~/Documents/DSE/DSE220_Final_Project/IRI_Data'
+
+(week,year,week_number,quarter)  
+  INTO  postgresql://sharknado:sharknado@sharknado-dse.ceg3hdkdq8l0.us-east-1.rds.amazonaws.com/sharknado?week_trans (week,year,week_number,quarter)
+
+     WITH truncate,  
+          skip header = 1,  
+          fields optionally enclosed by '"',  
+          fields terminated by ','  
+
+      SET client_encoding to 'latin1',  
+          work_mem to '12MB',  
+          standard_conforming_strings to 'on' 
+          
+
+  BEFORE LOAD DO  
+       $$ drop table if exists week_trans; $$,  
+       $$ create table week_trans (  
+           week integer,
+           year integer,
+           week_number integer,
+           quarter varchar(2)
+          );  
+   $$;
